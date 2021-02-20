@@ -4,6 +4,7 @@ on:
     paths:
       - "infra/**"
       - ".github/workflows/*"
+  pull_request:
 jobs:
   build-infra-code:
     runs-on: ubuntu-latest
