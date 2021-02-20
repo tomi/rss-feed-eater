@@ -30,5 +30,5 @@ jobs:
               --parameters tenantId=${{ secrets.AZURE_TENANT_ID }} \
               --parameters apiPublisherEmail=${{ secrets.AZURE_API_PUBLISHER_EMAIL }} \
               --resource-group "${{ secrets.AZURE_RG }}" \
-              --subscription "${{ secrets.AZURE_SUBSCRIPTION }}"
+              --subscription "${{ secrets.AZURE_SUBSCRIPTION }}" \
               --template-file ./infra/main.json
