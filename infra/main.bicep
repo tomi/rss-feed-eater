@@ -38,7 +38,7 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02-preview' = {
 }
 
 // Key vault
-resource keyvault 'Microsoft.KeyVault/vaults@2020-04-01-preview' = {
+resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: 'rssfeedeater-keyvault'
   location: location
   properties: {
