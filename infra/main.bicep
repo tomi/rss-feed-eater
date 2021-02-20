@@ -3,7 +3,7 @@ var location = resourceGroup().location
 
 // Storage account for Azure functions
 resource functionsStorage 'Microsoft.Storage/storageAccounts@2020-08-01-preview' = {
-  name: 'rssfeedeater${randomSuffix}functions'
+  name: 'rssfeedeater${randomSuffix}funcs'
   location: location
   kind: 'StorageV2'
   sku: {
