@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - "infra/**"
+      - ".github/workflows/*"
 jobs:
   build-infra-code:
     runs-on: ubuntu-latest
