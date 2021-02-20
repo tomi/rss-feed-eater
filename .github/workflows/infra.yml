@@ -1,0 +1,66 @@
+name: Deploy infra
+on:
+  push:
+    paths:
+      - "infra/**"
+      - ".github/workflows/*"
+jobs:
+  build-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Bicep build
+        uses: aliencube/bicep-build-actions@v0.1
+        with:
+          files: infra/main.bicep
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Show deployment plan
+        uses: azure/CLI@v1
+        with:
+          azcliversion: "latest"
+          inlineScript: |
+            az deployment group what-if \
+              --parameters tenantId=${{ secrets.AZURE_TENANT_ID }} \
+              --parameters apiPublisherEmail=${{ secrets.AZURE_API_PUBLISHER_EMAIL }} \
+              --resource-group "${{ secrets.AZURE_RG }}" \
+              --subscription "${{ secrets.AZURE_SUBSCRIPTION }}" \
+              --template-file ./infra/main.json
+
+      - name: "Tar files"
+        run: tar -cvf bicep-artifacts.tar ./infra
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: bicep-artifacts
+          path: bicep-artifacts.tar
+
+  deploy-infra:
+    runs-on: ubuntu-latest
+    needs: build-infra
+    steps:
+      # download & exract build artifacts
+      - uses: actions/download-artifact@v2
+        with:
+          name: bicep-artifacts
+
+      # Extract files from build tar
+      - name: "Extraxt Files"
+        run: tar -xvf bicep-artifacts.tar
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Run ARM deploy
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: ${{ secrets.AZURE_RG }}
+          template: ./infra/main.json
+          parameters: tenantId=${{ secrets.AZURE_TENANT_ID }} apiPublisherEmail=${{ secrets.AZURE_API_PUBLISHER_EMAIL }}
