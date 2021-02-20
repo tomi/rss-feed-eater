@@ -46,7 +46,7 @@ resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' = {
     enabledForDeployment: false
     enabledForDiskEncryption: false
     enabledForTemplateDeployment: false
-    enablePurgeProtection: false
+    enablePurgeProtection: true
     enableRbacAuthorization: true
     enableSoftDelete: true
     softDeleteRetentionInDays: 30
