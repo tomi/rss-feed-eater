@@ -42,11 +42,25 @@ resource keyvault 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: 'rssfeedeater-keyvault'
   location: location
   properties: {
+    accessPolicies: []
+    enabledForDeployment: false
+    enabledForDiskEncryption: false
+    enabledForTemplateDeployment: false
+    enablePurgeProtection: false
+    enableRbacAuthorization: true
+    enableSoftDelete: true
+    softDeleteRetentionInDays: 30
+    networkAcls: {
+      defaultAction: 'Allow'
+      bypass: 'AzureServices'
+      ipRules: []
+      virtualNetworkRules: []
+    }
+    tenantId: tenantId
     sku: {
       name: 'standard'
       family: 'A'
     }
-    tenantId: tenantId
   }
 }
 
