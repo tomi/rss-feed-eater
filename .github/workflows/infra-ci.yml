@@ -1,0 +1,15 @@
+name: Build infra code
+on:
+  push:
+    paths:
+      - "infra/**"
+jobs:
+  build-infra-code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Bicep build
+        uses: aliencube/bicep-build-actions@v0.1
+        with:
+          files: infra/main.bicep
