@@ -1,10 +1,11 @@
 name: Deploy infra
 on:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
     paths:
       - "infra/**"
+      - ".github/workflows/*"
 jobs:
   build-infra-code:
     runs-on: ubuntu-latest
@@ -21,4 +22,6 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           template: ./infra/main.json
-          parameters: tenantId=${{ secrets.AZURE_TENANT_ID }}
+          parameters:
+            - tenantId=${{ secrets.AZURE_TENANT_ID }}
+            - apiPublisherEmail=${{ secrets.AZURE_API_PUBLISHER_EMAIL }}
