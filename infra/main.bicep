@@ -66,6 +66,27 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
   }
 }
 
+// Cosmos DB
+resource cosmosdb 'Microsoft.DocumentDB/databaseAccounts@2020-06-01-preview' = {
+  name: 'rssfeedeater${randomSuffix}-cosmosdb'
+  location: location
+  kind: 'GlobalDocumentDB'
+  properties: {
+    databaseAccountOfferType: 'Standard'
+    createMode: 'Default'
+    locations: [
+      {
+        isZoneRedundant: false
+      }
+    ]
+    capabilities: [
+      {
+        name: 'EnableServerless'
+      }
+    ]
+  }
+}
+
 // Storage account for CDN backend
 resource cdnStorage 'Microsoft.Storage/storageAccounts@2020-08-01-preview' = {
   name: 'rssfeedeater${randomSuffix}cdn'
