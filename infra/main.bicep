@@ -1,3 +1,4 @@
+param apiPublisherEmail string
 param tenantId string
 
 var randomSuffix = '92314' // for globally unique names
@@ -99,6 +100,31 @@ resource cosmosdb 'Microsoft.DocumentDB/databaseAccounts@2020-06-01-preview' = {
         name: 'EnableServerless'
       }
     ]
+  }
+}
+
+// API Management
+resource apiManagement 'Microsoft.ApiManagement/service@2020-06-01-preview' = {
+  name: 'rssfeedeater-api-management'
+  location: location
+  sku: {
+    name: 'Consumption'
+    capacity: ''
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    publisherEmail: apiPublisherEmail
+    publisherName: 'RSS Feed Eater'
+    customProperties: {
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'false'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'false'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11': 'false'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10': 'false'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30': 'false'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2': 'false'
+    }
   }
 }
 
