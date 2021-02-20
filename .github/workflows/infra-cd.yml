@@ -21,3 +21,4 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           template: ./infra/main.json
+          parameters: tenantId=${{ secrets.AZURE_TENANT_ID }}

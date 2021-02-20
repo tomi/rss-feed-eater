@@ -1,3 +1,5 @@
+param tenantId string
+
 var randomSuffix = '92314' // for globally unique names
 var location = resourceGroup().location
 
@@ -17,6 +19,19 @@ resource appinsights 'Microsoft.Insights/components@2020-02-02-preview' = {
   name: 'rssfeedeater-appinsights'
   location: location
   kind: 'web'
+}
+
+// Key vault
+resource keyvault 'Microsoft.KeyVault/vaults@2020-04-01-preview' = {
+  name: 'rssfeedeater-keyvault'
+  location: location
+  properties: {
+    sku: {
+      name: 'standard'
+      family: 'A'
+    }
+    tenantId: tenantId
+  }
 }
 
 // Hosting plan for the function app

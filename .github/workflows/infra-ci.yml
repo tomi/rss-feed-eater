@@ -26,7 +26,8 @@ jobs:
         env:
           RG: ${{ secrets.AZURE_RG }}
           SUB_ID: ${{ secrets.AZURE_SUBSCRIPTION }}
+          TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         with:
           azcliversion: 2.16.0
           inlineScript: |
-            az deployment group what-if --resource-group "$RG" --subscription "$SUB_ID" --template-file ./infra/main.json
+            az deployment group what-if --parameters "tenantId=$TENANT_ID" --resource-group "$RG" --subscription "$SUB_ID" --template-file ./infra/main.json
