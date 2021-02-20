@@ -15,11 +15,26 @@ resource functionsStorage 'Microsoft.Storage/storageAccounts@2020-08-01-preview'
   }
 }
 
+// Log analytics workspace
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+  name: 'rssfeedeater-loganalytics'
+  location: location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+  }
+}
+
 // Application insights
 resource appinsights 'Microsoft.Insights/components@2020-02-02-preview' = {
   name: 'rssfeedeater-appinsights'
   location: location
   kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalytics.id
+  }
 }
 
 // Key vault
