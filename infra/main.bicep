@@ -92,6 +92,8 @@ resource cosmosdb 'Microsoft.DocumentDB/databaseAccounts@2020-06-01-preview' = {
     createMode: 'Default'
     locations: [
       {
+        locationName: 'West Europe'
+        failoverPriority: 0
         isZoneRedundant: false
       }
     ]
