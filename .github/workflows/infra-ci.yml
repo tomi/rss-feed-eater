@@ -30,4 +30,4 @@ jobs:
         with:
           azcliversion: 2.16.0
           inlineScript: |
-            az deployment group what-if --parameters "tenantId=$TENANT_ID" --resource-group "$RG" --subscription "$SUB_ID" --template-file ./infra/main.json
+            az deployment group what-if --parameters tenantId=$TENANT_ID --resource-group "$RG" --subscription "$SUB_ID" --template-file ./infra/main.json
