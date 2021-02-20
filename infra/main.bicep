@@ -74,7 +74,7 @@ resource functionApp 'Microsoft.Web/sites@2020-06-01' = {
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${functionsStorage.name};AccountKey=${listKeys(functionsStorage.id, '2020-08-01-preview').primaryKey}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${functionsStorage.name};AccountKey=${listKeys(functionsStorage.id, '2020-08-01-preview').keys[0].value}'
         }
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
