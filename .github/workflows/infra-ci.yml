@@ -13,3 +13,15 @@ jobs:
         uses: aliencube/bicep-build-actions@v0.1
         with:
           files: infra/main.bicep
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Show deployment plan
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.0.72
+          inlineScript: |
+            az deployment group what-if -g ${{ secrets.AZURE_RG }} --subscription ${{ secrets.AZURE_SUBSCRIPTION }} --template-file ./infra/main.json
