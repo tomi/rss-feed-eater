@@ -1,6 +1,7 @@
 import { array, Codec, string } from 'purify-ts/Codec';
 
 const configCodec = Codec.interface({
+  instrumentationKey: string,
   authConfig: Codec.interface({
     clientId: string,
     redirectUri: string,
@@ -11,6 +12,7 @@ const configCodec = Codec.interface({
 
 export const config = configCodec
   .decode({
+    instrumentationKey: import.meta.env.VITE_INSTRUMENTATION_KEY,
     authConfig: {
       clientId: import.meta.env.VITE_AUTH_CLIENT_ID,
       redirectUri: import.meta.env.VITE_AUTH_REDIRECT_URI,
