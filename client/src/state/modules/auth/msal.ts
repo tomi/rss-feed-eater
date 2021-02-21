@@ -9,12 +9,14 @@ const msalConfig: msal.Configuration = {
   },
 };
 
-const idTokenCodec = Codec.interface({
+const idTokenClaimsCodec = Codec.interface({
+  sub: string,
+  name: string,
+});
+
+const responseCodec = Codec.interface({
   accessToken: string,
-  idTokenClaims: Codec.interface({
-    sub: string,
-    name: string,
-  }),
+  idTokenClaims: idTokenClaimsCodec,
 });
 
 const scopes = {
@@ -35,15 +37,16 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 export async function init() {
   const response = await msalInstance.handleRedirectPromise();
 
-  if (!response) {
-    // const silentResponse = await msalInstance.ssoSilent();
-    // return parseResponse(silentResponse);
-    return undefined;
-  } else if (!response.accessToken) {
-    return acquireAccessToken();
+  if (response) {
+    return response.accessToken
+      ? parseResponse(response)
+      : acquireAccessToken();
   }
 
-  return parseResponse(response);
+  const accountInfo = getAccount();
+  if (accountInfo) {
+    return acquireAccessToken();
+  }
 }
 
 export async function acquireAccessToken() {
@@ -96,7 +99,7 @@ function getAccount() {
 }
 
 function parseResponse(response: msal.AuthenticationResult) {
-  return idTokenCodec.decode(response).map((decoded) => ({
+  return responseCodec.decode(response).map((decoded) => ({
     accessToken: decoded.accessToken,
     id: decoded.idTokenClaims.sub,
     name: decoded.idTokenClaims.name,
