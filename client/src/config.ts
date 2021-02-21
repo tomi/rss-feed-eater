@@ -9,8 +9,6 @@ const configCodec = Codec.interface({
   }),
 });
 
-console.log(import.meta.env);
-
 export const config = configCodec
   .decode({
     authConfig: {
