@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "rootDir": ".",
+    "sourceMap": true,
+    "lib": ["esnext"],
+    "strict": true,
+    "typeRoots": ["node_modules/@types", "./src/types"]
+  },
+  "include": ["**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["node_modules/**"]
+}
