@@ -2,8 +2,26 @@ import * as msal from '@azure/msal-browser';
 import { Codec, string } from 'purify-ts/Codec';
 import { config } from '../../../config';
 
+const policies = {
+  names: {
+    signUp: 'B2C_1_signup',
+    signIn: 'B2C_1_signin',
+  },
+  authorities: {
+    signUp:
+      'https://rssfeedeater.b2clogin.com/rssfeedeater.onmicrosoft.com/B2C_1_signup',
+    signIn:
+      'https://rssfeedeater.b2clogin.com/rssfeedeater.onmicrosoft.com/B2C_1_signin',
+  },
+  authorityDomain: 'rssfeedeater.b2clogin.com',
+};
+
 const msalConfig: msal.Configuration = {
-  auth: config.authConfig,
+  auth: {
+    clientId: config.authConfig.clientId,
+    redirectUri: config.authConfig.redirectUri,
+    knownAuthorities: [policies.authorityDomain],
+  },
   cache: {
     cacheLocation: 'sessionStorage',
   },
@@ -20,11 +38,12 @@ const responseCodec = Codec.interface({
 });
 
 const scopes = {
-  login: [
+  signIn: [
     'openid',
-    'email',
-    'profile',
-    'offline_access',
+    'https://rssfeedeater.onmicrosoft.com/e0b926a2-97f9-4da7-a557-7e22514b9a5a/demo.read',
+  ],
+  signUp: [
+    'openid',
     'https://rssfeedeater.onmicrosoft.com/e0b926a2-97f9-4da7-a557-7e22514b9a5a/demo.read',
   ],
   api: [
@@ -72,13 +91,21 @@ export async function acquireAccessToken() {
   }
 }
 
-export async function logIn() {
+export async function signIn() {
   await msalInstance.loginRedirect({
-    scopes: scopes.login,
+    scopes: scopes.signIn,
+    authority: policies.authorities.signIn,
   });
 }
 
-export async function logOut() {
+export async function signUp() {
+  await msalInstance.loginRedirect({
+    scopes: scopes.signUp,
+    authority: policies.authorities.signUp,
+  });
+}
+
+export async function signOut() {
   const currentAccount = getAccount();
   if (!currentAccount) {
     return;

@@ -5,7 +5,7 @@ import {
   Module,
   MutationTree,
 } from 'vuex';
-import { init, logIn, logOut } from './msal';
+import { init, signIn, signOut, signUp } from './msal';
 
 export interface User {
   id: string;
@@ -50,8 +50,9 @@ type AugmentedActionContext = {
 
 export enum ActionTypes {
   INIT = 'INIT',
-  LOG_IN = 'LOG_IN',
-  LOG_OUT = 'LOG_OUT',
+  SIGN_IN = 'SIGN_IN',
+  SIGN_OUT = 'LOG_OUT',
+  SIGN_UP = 'SIGN_UP',
 }
 
 export interface Actions {
@@ -60,9 +61,11 @@ export interface Actions {
     payload: number,
   ): Promise<void>;
 
-  [ActionTypes.LOG_IN]({}): Promise<void>;
+  [ActionTypes.SIGN_IN]({}): Promise<void>;
 
-  [ActionTypes.LOG_OUT]({}): Promise<void>;
+  [ActionTypes.SIGN_OUT]({}): Promise<void>;
+
+  [ActionTypes.SIGN_UP]({}): Promise<void>;
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -83,12 +86,16 @@ export const actions: ActionTree<State, State> & Actions = {
     });
   },
 
-  async [ActionTypes.LOG_IN]({}) {
-    await logIn();
+  async [ActionTypes.SIGN_IN]({}) {
+    await signIn();
   },
 
-  async [ActionTypes.LOG_OUT]({}) {
-    await logOut();
+  async [ActionTypes.SIGN_OUT]({}) {
+    await signOut();
+  },
+
+  async [ActionTypes.SIGN_UP]({}) {
+    signUp();
   },
 };
 

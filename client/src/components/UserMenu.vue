@@ -42,7 +42,7 @@
           href="#"
           role="menuitem"
           class="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-light dark:hover:bg-primary"
-          @click="logout"
+          @click="signOut"
         >
           Logout
         </a>
@@ -89,12 +89,8 @@ export default defineComponent({
       this.isOpen = !this.isOpen;
     },
 
-    login() {
-      this.$store.dispatch(actionsTypes.auth.LOG_IN);
-    },
-
-    logout() {
-      this.$store.dispatch(actionsTypes.auth.LOG_OUT);
+    signOut() {
+      this.$store.dispatch(actionsTypes.auth.SIGN_OUT);
     },
   },
 });

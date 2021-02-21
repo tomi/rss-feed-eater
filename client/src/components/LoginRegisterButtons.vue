@@ -1,7 +1,7 @@
 <template>
-  <primary-button @click="login">Login</primary-button>
+  <primary-button @click="signIn">Login</primary-button>
 
-  <primary-button @click="register">Register</primary-button>
+  <primary-button @click="signUp">Register</primary-button>
 </template>
 
 <script>
@@ -14,12 +14,12 @@ export default defineComponent({
   components: { PrimaryButton },
 
   methods: {
-    login() {
-      this.$store.dispatch(actionsTypes.auth.LOG_IN);
+    signIn() {
+      this.$store.dispatch(actionsTypes.auth.SIGN_IN);
     },
 
-    register() {
-      // TODO
+    signUp() {
+      this.$store.dispatch(actionsTypes.auth.SIGN_UP);
     },
   },
 });
