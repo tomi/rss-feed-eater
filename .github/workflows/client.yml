@@ -1,0 +1,27 @@
+name: Build & deploy client
+
+on:
+  push:
+    paths:
+      - "client/**"
+      - ".github/workflows/*"
+  pull_request:
+    branches: [$default-branch]
+
+jobs:
+  build-client:
+    runs-on: Ubuntu-20.04
+
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build

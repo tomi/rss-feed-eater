@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "path": "client"
+    },
+    {
+      "path": "infra"
+    },
+    {
+      "path": ".github"
+    }
+  ],
+  "settings": {
+    "debug.internalConsoleOptions": "neverOpen",
+    "vetur.validation.template": false,
+    "vetur.experimental.templateInterpolationService": true,
+    "vetur.format.enable": false,
+    "vetur.completion.scaffoldSnippetSources": {
+      "user": "🗒️",
+      "workspace": "💼",
+      "vetur": ""
+    },
+    "prettier.disableLanguages": []
+  }
+}
