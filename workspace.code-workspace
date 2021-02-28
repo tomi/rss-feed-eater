@@ -4,13 +4,16 @@
       "path": "client"
     },
     {
-      "path": "api"
-    },
-    {
       "path": "infra"
     },
     {
       "path": ".github"
+    },
+    {
+      "path": "api"
+    },
+    {
+      "path": "api-old"
     }
   ],
   "settings": {
