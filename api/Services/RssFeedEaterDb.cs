@@ -2,39 +2,40 @@
 
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace RssFeedEater.Data
 {
   public class RssFeedEaterDb
   {
-    public CosmosClient client;
-    public Database database;
-
-    private static RssFeedEaterDb _instance;
+    private IConfiguration _configuration;
+    private ILogger _log;
+    private CosmosClient _client;
+    private Database _database;
 
     private static readonly string _dbName = "RssFeedReaderDB";
 
-    private RssFeedEaterDb(string connectionString)
+    public RssFeedEaterDb(IConfiguration configuration, ILoggerFactory loggerFactory)
     {
-      client = new CosmosClient(connectionString);
+      _configuration = configuration;
+      _log = loggerFactory.CreateLogger<RssFeedEaterDb>();
+      _client = new CosmosClient(
+        _configuration["COSMOS_DB_CONNECTION_STRING"],
+        new CosmosClientOptions()
+        {
+          AllowBulkExecution = true
+        });
     }
 
-    public async Task<Container> GetContainer(ContainerProperties properties)
+    public async Task<Database> GetDatabase()
     {
-      return await this.database.CreateContainerIfNotExistsAsync(properties);
-    }
-
-    public static async Task<RssFeedEaterDb> Connect(string connectionString)
-    {
-      if (_instance == null)
+      if (_database == null)
       {
-        _instance = new RssFeedEaterDb(connectionString);
-
-        _instance.database = await _instance.client.CreateDatabaseIfNotExistsAsync(_dbName);
-
+        _database = await _client.CreateDatabaseIfNotExistsAsync(_dbName);
       }
 
-      return _instance;
+      return _database;
     }
   }
 }

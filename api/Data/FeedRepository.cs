@@ -11,7 +11,7 @@ namespace RssFeedEater.Data
   public class FeedRepository
   {
     private readonly RssFeedEaterDb _db;
-    // private static readonly string containerName = "Feeds";
+    private readonly string _partitionKey = nameof(Feed.FeedId);
 
     public FeedRepository(RssFeedEaterDb db)
     {
@@ -27,14 +27,30 @@ namespace RssFeedEater.Data
       return response.Resource;
     }
 
+    public async Task<IEnumerable<FeedItem>> CreateFeedItems(IEnumerable<FeedItem> items)
+    {
+      var container = await this.GetContainer();
+
+      // Assuming your have your data available to be inserted or read
+      var concurrentTasks = new List<Task<ItemResponse<FeedItem>>>();
+      foreach (var itemToInsert in items)
+      {
+        concurrentTasks.Add(container.CreateItemAsync(itemToInsert, new PartitionKey(itemToInsert.FeedId)));
+      }
+
+      var createdItems = await Task.WhenAll(concurrentTasks);
+
+      return createdItems.Select(response => response.Resource);
+    }
+
     public async Task<Feed> GetFeedByUri(string feedUri)
     {
       var container = await this.GetContainer();
 
       try
       {
-        QueryDefinition query = new QueryDefinition($"SELECT * FROM Feeds c WHERE c.Uri = @Uri")
-            .WithParameter("@Uri", feedUri);
+        QueryDefinition query = new QueryDefinition($"SELECT * FROM Feeds c WHERE c.{nameof(Feed.RssUrl)} = @RssUrl")
+            .WithParameter("@RssUrl", feedUri);
 
         List<Feed> results = new List<Feed>();
         using (FeedIterator<Feed> resultSetIterator = container.GetItemQueryIterator<Feed>(
@@ -65,10 +81,17 @@ namespace RssFeedEater.Data
 
     private async Task<Container> GetContainer()
     {
-      return await _db.database.DefineContainer(name: "Feeds", partitionKeyPath: "/Uri")
-        .WithUniqueKey().Path("/Uri").Attach()
+      var db = await _db.GetDatabase();
+
+      return await db.DefineContainer(name: "Feeds", partitionKeyPath: $"/{_partitionKey}")
         .WithIndexingPolicy()
-          .WithIncludedPaths().Path("/").Path("/Uri/*").Attach()
+          .WithIncludedPaths()
+            .Path("/")
+            .Path($"/{nameof(Feed.Type)}/*")
+            .Path($"/{nameof(Feed.RssUrl)}/*")
+            .Path($"/{nameof(FeedItem.ItemId)}/*")
+            .Path($"/{_partitionKey}/*")
+            .Attach()
           .Attach()
         .CreateIfNotExistsAsync();
     }
